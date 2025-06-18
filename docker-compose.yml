@@ -1,0 +1,22 @@
+version: '3'
+services:
+  next-app:
+    image: node:22.4-alpine 
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./jvtheque-app:/jvtheque
+    working_dir: /jvtheque
+    command: tail -f /dev/null
+  bdd:
+    image: postgres:17.5-alpine3.22
+    environment:
+      POSTGRES_DB: jvtheque_db
+      POSTGRES_USER: jvtheque_user
+      POSTGRES_PASSWORD: jvtheque_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
