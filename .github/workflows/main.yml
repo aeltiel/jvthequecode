@@ -23,4 +23,6 @@ jobs:
           npm ci
 
       - name: Build Next.js app
-        run: npm run build
+        run: |
+          cd jvtheque-app
+          npm run build
