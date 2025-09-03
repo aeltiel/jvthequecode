@@ -42,4 +42,3 @@ jvthequecode/
 ```
 
 > Pour toute configuration supplémentaire (variables d'environnement, scripts, etc.), se référer aux fichiers du dossier `jvtheque-app`.
- test

@@ -1,0 +1,18 @@
+# Dockerfile.dev
+FROM node:22.4-alpine
+
+# Dossier de travail
+WORKDIR /app
+
+# Copie uniquement package.json + lockfile pour installer les dépendances
+COPY package*.json ./
+RUN npm install
+
+# Copie du reste du code
+COPY . .
+
+# Port exposé (3000 = port Next.js)
+EXPOSE 3000
+
+# Commande de lancement en mode dev (hot reload)
+CMD ["npm", "run", "dev"]
