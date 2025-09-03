@@ -1,4 +1,4 @@
-name: CI for Next.js project
+name: CI for Next.js with Docker + Postgres
 
 on:
   pull_request:
@@ -6,19 +6,43 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17.5-alpine3.22
+        env:
+          POSTGRES_DB: jvtheque_db
+          POSTGRES_USER: jvtheque_user
+          POSTGRES_PASSWORD: jvtheque_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U jvtheque_user -d jvtheque_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.4' 
+      - name: Build Docker image
+        run: docker build -t my-next-app .
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Run container
+        run: docker run -d -p 3000:3000 --name test-next jvtheque-app
 
-      - name: Build Next.js app
-        run: npm run build
+      - name: Wait for app to be ready
+        run: |
+          for i in {1..10}; do
+            if curl -s http://localhost:3000 > /dev/null; then
+              echo "App is up!"
+              exit 0
+            fi
+            echo "Waiting for app..."
+            sleep 3
+          done
+          echo "App did not start in time"
+          exit 1
