@@ -20,7 +20,7 @@ jobs:
       # 2️⃣ Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
-          docker compose -f ./jvthecode/docker-compose.yml up --build -d
+          docker compose up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15  # ajuste si ton app prend plus de temps
 
