@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t my-next-app .
+        run: docker build -t jvtheque-app .
 
       - name: Run container
         run: docker run -d -p 3000:3000 --name test-next jvtheque-app
