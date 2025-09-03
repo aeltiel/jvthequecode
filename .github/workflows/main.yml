@@ -3,7 +3,7 @@ name: CI for Next.js with Docker + Postgres
 on:
   push:
     branches:
-      - dev
+      - Dev
   pull_request:
     branches:
       - main
