@@ -9,40 +9,24 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17.5-alpine3.22
-        env:
-          POSTGRES_DB: jvtheque_db
-          POSTGRES_USER: jvtheque_user
-          POSTGRES_PASSWORD: jvtheque_password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U jvtheque_user -d jvtheque_db"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
+      # 1️⃣ Récupérer le code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t jvthequecode .
-
-      - name: Run container
-        run: docker run -d -p 3000:3000 --name test-next jvtheque-app
-
-      - name: Wait for app to be ready
+      # 2️⃣ Lancer Docker Compose (build + run)
+      - name: Run Docker Compose
         run: |
-          for i in {1..10}; do
-            if curl -s http://localhost:3000 > /dev/null; then
-              echo "App is up!"
-              exit 0
-            fi
-            echo "Waiting for app..."
-            sleep 3
-          done
-          echo "App did not start in time"
-          exit 1
+          docker-compose -f ./jvthecode/docker-compose.yml up --build -d
+          echo "Attente que Next.js démarre..."
+          sleep 15  # ajuste si ton app prend plus de temps
+
+      # 3️⃣ Vérifier que l'app Next.js répond
+      - name: Check Next.js app is running
+        run: |
+          curl --fail http://localhost:3000 || (echo "App failed to start" && exit 1)
+
+      # 4️⃣ Nettoyage : arrêter tous les conteneurs
+      - name: Tear down
+        if: always()
+        run: docker-compose -f ./jvthecode/docker-compose.yml down
