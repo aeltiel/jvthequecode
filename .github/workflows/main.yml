@@ -41,4 +41,4 @@ jobs:
       # 4️⃣ Nettoyage : arrêter tous les conteneurs
       - name: Tear down
         if: always()
-        run: docker-compose -f ./jvthecode/docker-compose.yml down
+        run: docker compose -f ./jvthecode/docker-compose.yml down
