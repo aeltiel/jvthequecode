@@ -1,9 +1,12 @@
 name: CI for Next.js with Docker + Postgres
 
 on:
-pull_request:
-branches:
-  - main
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - main
 
 jobs:
 build-and-test:
