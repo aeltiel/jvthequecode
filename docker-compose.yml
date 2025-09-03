@@ -7,7 +7,7 @@ services:
     volumes:
       - ./jvtheque-app:/jvtheque
     working_dir: /jvtheque
-    command: tail -f /dev/null
+    command: sh -c "npm install && npm run dev"
   bdd:
     image: postgres:17.5-alpine3.22
     environment:
