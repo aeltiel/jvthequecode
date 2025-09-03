@@ -20,7 +20,7 @@ jobs:
       # 2️⃣ Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
-          docker compose up --build -d
+          docker compose -f ./jvthecode/docker-compose.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15  # ajuste si ton app prend plus de temps
 
@@ -28,7 +28,7 @@ jobs:
       - name: Wait for Next.js
         run: |
           for i in {1..15}; do
-            if curl --silent --fail <http://localhost:3000>; then
+            if curl --silent --fail http://localhost:3000; then
             echo "Next.js app is up!"
               exit 0
             fi
