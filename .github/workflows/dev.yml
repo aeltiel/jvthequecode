@@ -1,9 +1,9 @@
 name: CI for Next.js with Docker + Postgres
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - Dev
 
 jobs:
   build-and-test:
@@ -17,7 +17,7 @@ jobs:
       # 2️⃣ Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
-          docker compose -f docker-compose.prod.yml up --build -d
+          docker compose -f docker-compose.dev.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15  # ajuste si ton app prend plus de temps
 
@@ -30,7 +30,7 @@ jobs:
               exit 0
             fi
             echo "Waiting for Next.js to start... ($i/15)"
-            sleep 10
+            sleep 5
           done
           echo "Next.js app failed to start after 75 seconds"
           exit 1
@@ -38,20 +38,4 @@ jobs:
       # 4️⃣ Nettoyage : arrêter tous les conteneurs
       - name: Tear down
         if: always()
-        run: docker compose -f docker-compose.prod.yml down
-
-      # 5️⃣ Se connecter à GitHub Container Registry
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      # 6️⃣ Build de l'image Docker pour publication
-      - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}/jvtheque-app:latest -f jvtheque-app/Dockerfile ./jvtheque-app
-
-      # 7️⃣ Push de l'image sur GitHub Container Registry
-      - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository }}/jvtheque-app:latest
+        run: docker compose -f docker-compose.dev.yml down
