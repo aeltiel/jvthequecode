@@ -1,9 +1,9 @@
 name: CI for Next.js with Docker + Postgres
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - Dev
 
 jobs:
   build-and-test:
@@ -17,7 +17,7 @@ jobs:
       # 2️⃣ Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
-          docker compose -f docker-compose.prod.yml up --build -d
+          docker compose -f docker-compose.dev.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15  # ajuste si ton app prend plus de temps
 
