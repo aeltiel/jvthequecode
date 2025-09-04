@@ -6,11 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - ./jvtheque-app:/app
-      - /app/node_modules
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
 
   bdd:
     image: postgres:17.5-alpine3.22

@@ -30,7 +30,7 @@ jobs:
               exit 0
             fi
             echo "Waiting for Next.js to start... ($i/15)"
-            sleep 5
+            sleep 10
           done
           echo "Next.js app failed to start after 75 seconds"
           exit 1
