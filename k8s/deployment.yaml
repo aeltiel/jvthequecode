@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jvtheque-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jvtheque
+  template:
+    metadata:
+      labels:
+        app: jvtheque
+    spec:
+      containers:
+      - name: jvtheque
+        image: ghcr.io/aeltiel/jvthequecode/jvtheque-app:latest
+        ports:
+        - containerPort: 3000
