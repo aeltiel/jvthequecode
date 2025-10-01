@@ -37,8 +37,7 @@ jobs:
 
       # 4️ Vérifier que la DB répond via Prisma
       - name: Test DB connection
-        run: |
-          node scripts/test-db.js
+        run: node jvtheque-app/scripts/test-db.js
 
       # 5 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
