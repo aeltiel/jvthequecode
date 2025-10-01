@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupérer le code
+      # 1️ Récupérer le code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Lancer Docker Compose (build + run)
+      # 2️ Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
           docker compose -f docker-compose.dev.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15  # ajuste si ton app prend plus de temps
 
-      # 3️⃣ Vérifier que l'app Next.js répond
+      # 3️ Vérifier que l'app Next.js répond
       - name: Wait for Next.js
         run: |
           for i in {1..15}; do
@@ -35,7 +35,12 @@ jobs:
           echo "Next.js app failed to start after 75 seconds"
           exit 1
 
-      # 4️⃣ Nettoyage : arrêter tous les conteneurs
+      # 4️ Vérifier que la DB répond via Prisma
+      - name: Test DB connection
+        run: |
+          node scripts/test-db.js
+
+      # 5 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
         if: always()
         run: docker compose -f docker-compose.dev.yml down
