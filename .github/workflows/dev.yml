@@ -45,7 +45,7 @@ jobs:
 
       # 5 Vérifier que la DB répond via Prisma
       - name: Test DB connection
-        run: docker compose -f docker-compose.dev.yml run --rm -w /app next-app npx node scripts/test-db.js
+        run: docker compose -f docker-compose.dev.yml exec -w /app next-app npx node scripts/test-db.js
 
       # 6 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
