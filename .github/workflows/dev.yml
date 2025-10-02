@@ -19,7 +19,7 @@ jobs:
         run: |
           docker compose -f docker-compose.dev.yml up --build -d
           echo "Attente que Next.js démarre..."
-          sleep 15  # ajuste si ton app prend plus de temps
+          sleep 15 
 
       # 3️ Vérifier que l'app Next.js répond
       - name: Wait for Next.js
@@ -39,8 +39,8 @@ jobs:
       - name: Setup DB
         run: |
           docker compose -f docker-compose.dev.yml up -d bdd
-          docker compose -f docker-compose.dev.yml run --rm -w /app next-app npx prisma migrate deploy
-          docker compose -f docker-compose.dev.yml run --rm -w /app next-app npx prisma generate
+          docker compose -f docker-compose.dev.yml exec -w /app next-app npx prisma migrate deploy
+          docker compose -f docker-compose.dev.yml exec -w /app next-app npx prisma generate
 
 
       # 5 Vérifier que la DB répond via Prisma
