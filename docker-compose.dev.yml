@@ -11,6 +11,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgres://jvtheque_user:jvtheque_password@bdd:5432/jvtheque_db
 
   bdd:
     image: postgres:17.5-alpine3.22

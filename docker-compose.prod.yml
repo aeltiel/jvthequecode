@@ -8,6 +8,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgres://jvtheque_user:jvtheque_password@bdd:5432/jvtheque_db
 
   bdd:
     image: postgres:17.5-alpine3.22
