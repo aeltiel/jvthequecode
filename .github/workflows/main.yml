@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupérer le code
+      # 1️ Récupérer le code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Lancer Docker Compose (build + run)
+      # 2️ Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
           docker compose -f docker-compose.prod.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15  # ajuste si ton app prend plus de temps
 
-      # 3️⃣ Vérifier que l'app Next.js répond
+      # 3️ Vérifier que l'app Next.js répond
       - name: Wait for Next.js
         run: |
           for i in {1..15}; do
@@ -35,12 +35,24 @@ jobs:
           echo "Next.js app failed to start after 75 seconds"
           exit 1
 
-      # 4️⃣ Nettoyage : arrêter tous les conteneurs
+      # 4 Setup DB
+      - name: Setup DB
+        run: |
+          docker compose -f docker-compose.prod.yml up -d bdd
+          docker compose -f docker-compose.prod.yml exec -w /app next-app npx prisma migrate deploy
+          docker compose -f docker-compose.prod.yml exec -w /app next-app npx prisma generate
+
+
+      # 5 Vérifier que la DB répond via Prisma
+      - name: Test DB connection
+        run: docker compose -f docker-compose.prod.yml exec -w /app next-app node scripts/test-db.js
+
+      # 6 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
         if: always()
         run: docker compose -f docker-compose.prod.yml down
 
-      # 5️⃣ Se connecter à GitHub Container Registry
+      # 7 Se connecter à GitHub Container Registry
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -48,10 +60,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      # 6️⃣ Build de l'image Docker pour publication
+      # 8 Build de l'image Docker pour publication
       - name: Build Docker image
         run: docker build -t ghcr.io/${{ github.repository }}/jvtheque-app:latest -f jvtheque-app/Dockerfile ./jvtheque-app
 
-      # 7️⃣ Push de l'image sur GitHub Container Registry
+      # 9 Push de l'image sur GitHub Container Registry
       - name: Push Docker image
         run: docker push ghcr.io/${{ github.repository }}/jvtheque-app:latest
