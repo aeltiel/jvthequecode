@@ -38,7 +38,7 @@ jobs:
       # 4 Setup DB
       - name: Setup DB
         run: |
-          docker compose -f docker-compose.dev.yml up -d db
+          docker compose -f docker-compose.dev.yml up -d bdd
           npx prisma migrate deploy
           npx prisma generate
 
