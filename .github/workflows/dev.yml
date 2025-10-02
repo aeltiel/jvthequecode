@@ -39,12 +39,13 @@ jobs:
       - name: Setup DB
         run: |
           docker compose -f docker-compose.dev.yml up -d bdd
-          npx prisma migrate deploy
-          npx prisma generate
+          docker compose -f docker-compose.dev.yml run --rm -w /app next-app npx prisma migrate deploy
+          docker compose -f docker-compose.dev.yml run --rm -w /app next-app npx prisma generate
+
 
       # 5 Vérifier que la DB répond via Prisma
       - name: Test DB connection
-        run: docker compose -f docker-compose.dev.yml run --rm next-app npx node scripts/test-db.js
+        run: docker compose -f docker-compose.dev.yml run --rm -w /app next-app npx node scripts/test-db.js
 
       # 6 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
