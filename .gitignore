@@ -1,0 +1,4 @@
+deploy-kube.ps1
+cleanup-kube.ps1
+db-secret.env
+.env
