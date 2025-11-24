@@ -8,7 +8,7 @@ module.exports ={
   testPathIgnorePatterns: ["/node_modules/"],
   reporters: [
     "default",
-    ["jest-junit", { outputDirectory: "reports", outputName: "jest.xml" }]
+    ["jest-junit", { outputDirectory: "reports/junit", outputName: "jest.xml" }]
   ],
   collectCoverage: true,
   coverageDirectory: "coverage"
