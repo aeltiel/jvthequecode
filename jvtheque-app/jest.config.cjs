@@ -5,6 +5,12 @@ module.exports ={
   },
   moduleFileExtensions: ["js", "jsx"],
   setupFilesAfterEnv: ["<rootDir>/tests/setUpTest.js"],
-  testPathIgnorePatterns: ["/node_modules/"]
+  testPathIgnorePatterns: ["/node_modules/"],
+  reporters: [
+    "default",
+    ["jest-junit", { outputDirectory: "reports/junit", outputName: "jest.xml" }]
+  ],
+  collectCoverage: true,
+  coverageDirectory: "coverage"
 };
 
