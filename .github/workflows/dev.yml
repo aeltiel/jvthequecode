@@ -27,7 +27,7 @@ jobs:
 
       # 3️ Lancer les tests unitaires (Jest)
       - name: Run Jest tests
-        run: npm test -- --ci --reporters=default --reporters=jest-junit
+        run: npm test -- --ci
         working-directory: ./jvtheque-app
       
       # 3.1 Upload du rapport JUnit en tant qu’artefact
