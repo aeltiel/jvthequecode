@@ -18,7 +18,6 @@ kubectl apply -f k8s/deployment.yaml \
               -f k8s/ingress.yaml \
               -f k8s/pvc-db.yaml
 
-
 # 2️⃣ Attendre que le pod Next.js soit prêt
 echo "Attente du pod Next.js..."
 kubectl wait --for=condition=ready pod -l app=jvtheque --timeout=50s

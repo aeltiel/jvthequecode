@@ -27,8 +27,24 @@ jobs:
 
       # 3️ Lancer les tests unitaires (Jest)
       - name: Run Jest tests
-        run: npm test
+        run: npm test -- --ci --reporters=default --reporters=jest-junit
         working-directory: ./jvtheque-app
+      
+      # 3.1 Upload du rapport JUnit en tant qu’artefact
+      - name: Upload Jest test report (JUnit XML)
+        if: always() 
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-test-report
+          path: jvtheque-app/reports/junit/jest.xml
+
+      # 3.2 Résumé des tests dans l’onglet "Summary"
+      - name: Publish test summary
+        if: always()
+        run: |
+          echo "## Résumé des tests Jest" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✔ Rapport généré : **reports/junit/jest.xml**" >> $GITHUB_STEP_SUMMARY
 
       # 4 Lancer Docker Compose (build + run)
       - name: Run Docker Compose
