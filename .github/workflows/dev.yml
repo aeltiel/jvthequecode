@@ -9,19 +9,51 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    env:
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      
     steps:
       # 1️ Récupérer le code
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      # 2️ Installer les dépendances
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./jvtheque-app
 
-      # 2️ Lancer Docker Compose (build + run)
+      # 3️ Lancer les tests unitaires (Jest)
+      - name: Run Jest tests
+        run: npm test -- --ci
+        working-directory: ./jvtheque-app
+      
+      # 3.1 Upload du rapport JUnit en tant qu’artefact
+      - name: Upload Jest test report (JUnit XML)
+        if: always() 
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-test-report
+          path: jvtheque-app/reports/junit/jest.xml
+
+      # 3.2 Résumé des tests dans l’onglet "Summary"
+      - name: Publish test summary
+        if: always()
+        run: |
+          echo "## Résumé des tests Jest" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✔ Rapport généré : **reports/junit/jest.xml**" >> $GITHUB_STEP_SUMMARY
+
+      # 4 Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
           docker compose -f docker-compose.dev.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15 
 
-      # 3️ Vérifier que l'app Next.js répond
+      # 5 Vérifier que l'app Next.js répond
       - name: Wait for Next.js
         run: |
           for i in {1..15}; do
@@ -35,7 +67,7 @@ jobs:
           echo "Next.js app failed to start after 75 seconds"
           exit 1
 
-      # 4 Setup DB
+      # 6 Setup DB
       - name: Setup DB
         run: |
           docker compose -f docker-compose.dev.yml up -d bdd
@@ -43,11 +75,12 @@ jobs:
           docker compose -f docker-compose.dev.yml exec -w /app next-app npx prisma generate
 
 
-      # 5 Vérifier que la DB répond via Prisma
+      # 7 Vérifier que la DB répond via Prisma
       - name: Test DB connection
         run: docker compose -f docker-compose.dev.yml exec -w /app next-app npx node scripts/test-db.js
 
-      # 6 Nettoyage : arrêter tous les conteneurs
+      
+      # 8 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
         if: always()
         run: docker compose -f docker-compose.dev.yml down

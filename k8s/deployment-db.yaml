@@ -19,11 +19,20 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_DB
-              value: jvtheque_db
+              valueFrom:
+                secretKeyRef:
+                  name: jvtheque-db-secret
+                  key: DB_NAME
             - name: POSTGRES_USER
-              value: jvtheque_user
+              valueFrom:
+                secretKeyRef:
+                  name: jvtheque-db-secret
+                  key: DB_USER
             - name: POSTGRES_PASSWORD
-              value: jvtheque_password
+              valueFrom:
+                secretKeyRef:
+                  name: jvtheque-db-secret
+                  key: DB_PASSWORD
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data

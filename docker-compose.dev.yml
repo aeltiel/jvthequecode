@@ -11,14 +11,14 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgres://jvtheque_user:jvtheque_password@bdd:5432/jvtheque_db
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@bdd:5432/${DB_NAME}
 
   bdd:
     image: postgres:17.5-alpine3.22
     environment:
-      POSTGRES_DB: jvtheque_db
-      POSTGRES_USER: jvtheque_user
-      POSTGRES_PASSWORD: jvtheque_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
