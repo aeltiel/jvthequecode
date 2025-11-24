@@ -94,9 +94,7 @@ jobs:
 
       # 10 Build de l'image Docker pour publication
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}/jvtheque-app:latest \
-                          -t ghcr.io/${{ github.repository }}/jvtheque-app:${{ github.ref_name }} \
-                          -f jvtheque-app/Dockerfile ./jvtheque-app
+        run: docker build -t ghcr.io/${{ github.repository }}/jvtheque-app:latest -t ghcr.io/${{ github.repository }}/jvtheque-app:${{ github.ref_name }} -f jvtheque-app/Dockerfile ./jvtheque-app
 
       # 11 Push de l'image sur GitHub Container Registry
       - name: Push Docker image
