@@ -44,7 +44,32 @@ jobs:
         run: |
           echo "## Résumé des tests Jest" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✔ Rapport généré : **reports/junit/jest.xml**" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f reports/junit/jest.xml ]; then
+            TOTAL=$(grep -o 'tests="[0-9]*"' reports/junit/jest.xml | head -1 | cut -d'"' -f2)
+            FAILURES=$(grep -o 'failures="[0-9]*"' reports/junit/jest.xml | head -1 | cut -d'"' -f2)
+            ERRORS=$(grep -o 'errors="[0-9]*"' reports/junit/jest.xml | head -1 | cut -d'"' -f2)
+            TIME=$(grep -o 'time="[0-9.]*"' reports/junit/jest.xml | head -1 | cut -d'"' -f2)
+
+            if [ "$FAILURES" -eq 0 ] && [ "$ERRORS" -eq 0 ]; then
+              echo "**Succès** : tous les tests sont passés." >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**Échec** : certains tests ont échoué." >> $GITHUB_STEP_SUMMARY
+            fi
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Indicateur | Valeur |" >> $GITHUB_STEP_SUMMARY
+            echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Total      | $TOTAL |" >> $GITHUB_STEP_SUMMARY
+            echo "| Échecs     | $FAILURES |" >> $GITHUB_STEP_SUMMARY
+            echo "| Erreurs    | $ERRORS |" >> $GITHUB_STEP_SUMMARY
+            echo "| Durée (s)  | $TIME |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            echo "Rapport complet : **reports/junit/jest.xml**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Aucun rapport trouvé (reports/junit/jest.xml introuvable)" >> $GITHUB_STEP_SUMMARY
+          fi
           
       # 4 Lancer Docker Compose (build + run)
       - name: Run Docker Compose
