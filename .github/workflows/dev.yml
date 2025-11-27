@@ -25,12 +25,17 @@ jobs:
         run: npm ci
         working-directory: ./jvtheque-app
 
-      # 3️ Lancer les tests unitaires (Jest)
+      # 3️ Lint qualité du code
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: ./jvtheque-app
+
+      # 4 Lancer les tests unitaires (Jest)
       - name: Run Jest tests
         run: npm test -- --ci
         working-directory: ./jvtheque-app
       
-      # 3.1 Upload du rapport JUnit en tant qu’artefact
+      # 4.1 Upload du rapport JUnit en tant qu’artefact
       - name: Upload Jest test report (JUnit XML)
         if: always() 
         uses: actions/upload-artifact@v4
@@ -38,7 +43,7 @@ jobs:
           name: jest-test-report
           path: jvtheque-app/reports/junit/jest.xml
 
-      # 3.2 Résumé des tests dans l’onglet "Summary"
+      # 4.2 Résumé des tests dans l’onglet "Summary"
       - name: Publish test summary
         if: always()
         run: |
@@ -46,14 +51,14 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✔ Rapport généré : **reports/junit/jest.xml**" >> $GITHUB_STEP_SUMMARY
 
-      # 4 Lancer Docker Compose (build + run)
+      # 5 Lancer Docker Compose (build + run)
       - name: Run Docker Compose
         run: |
           docker compose -f docker-compose.dev.yml up --build -d
           echo "Attente que Next.js démarre..."
           sleep 15 
 
-      # 5 Vérifier que l'app Next.js répond
+      # 6 Vérifier que l'app Next.js répond
       - name: Wait for Next.js
         run: |
           for i in {1..15}; do
@@ -67,7 +72,7 @@ jobs:
           echo "Next.js app failed to start after 75 seconds"
           exit 1
 
-      # 6 Setup DB
+      # 7 Setup DB
       - name: Setup DB
         run: |
           docker compose -f docker-compose.dev.yml up -d bdd
@@ -75,12 +80,12 @@ jobs:
           docker compose -f docker-compose.dev.yml exec -w /app next-app npx prisma generate
 
 
-      # 7 Vérifier que la DB répond via Prisma
+      # 8 Vérifier que la DB répond via Prisma
       - name: Test DB connection
         run: docker compose -f docker-compose.dev.yml exec -w /app next-app npx node scripts/test-db.js
 
       
-      # 8 Nettoyage : arrêter tous les conteneurs
+      # 9 Nettoyage : arrêter tous les conteneurs
       - name: Tear down
         if: always()
         run: docker compose -f docker-compose.dev.yml down

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="4" failures="0" errors="0" time="5.599">
+  <testsuite name="Navbar component" errors="0" failures="0" skipped="0" timestamp="2025-11-27T10:21:45" time="3.006" tests="3">
+    <testcase classname="Navbar component renders a navigation element" name="Navbar component renders a navigation element" time="0.13">
+    </testcase>
+    <testcase classname="Navbar component renders links with correct text and hrefs" name="Navbar component renders links with correct text and hrefs" time="0.011">
+    </testcase>
+    <testcase classname="Navbar component matches snapshot" name="Navbar component matches snapshot" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="Page Collection" errors="0" failures="0" skipped="0" timestamp="2025-11-27T10:21:45" time="3.091" tests="1">
+    <testcase classname="Page Collection est accessible et affiche le texte attendu" name="Page Collection est accessible et affiche le texte attendu" time="0.051">
+    </testcase>
+  </testsuite>
+</testsuites>
