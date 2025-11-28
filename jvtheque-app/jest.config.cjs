@@ -11,6 +11,14 @@ module.exports ={
     ["jest-junit", { outputDirectory: "reports/junit", outputName: "jest.xml" }]
   ],
   collectCoverage: true,
-  coverageDirectory: "coverage"
+  coverageDirectory: "coverage",
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
 };
 
